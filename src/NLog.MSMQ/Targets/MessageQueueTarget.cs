@@ -33,7 +33,11 @@
 
 namespace NLog.Targets
 {
+#if NETSTANDARD
+    using MSMQ.Messaging;
+#else
     using System.Messaging;
+#endif
     using System.Text;
     using NLog.Config;
     using NLog.Layouts;
@@ -60,7 +64,7 @@ namespace NLog.Targets
     [Target("MSMQ")]
     public class MessageQueueTarget : TargetWithLayout
     {
-        private const MessagePriority MessagePriority = System.Messaging.MessagePriority.Normal;
+        private const MessagePriority DefaultMessagePriority = MessagePriority.Normal;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageQueueTarget"/> class.
@@ -187,7 +191,7 @@ namespace NLog.Targets
             }
 
             msg.Recoverable = Recoverable;
-            msg.Priority = MessagePriority;
+            msg.Priority = DefaultMessagePriority;
 
             if (UseXmlEncoding)
             {

@@ -31,10 +31,14 @@
 // THE POSSIBILITY OF SUCH DAMAGE.
 // 
 
-namespace NLog.MSMQ.Tests
+namespace NLog.MessageQueue.Tests
 {
     using System.Collections.Generic;
+#if NETFRAMEWORK
     using System.Messaging;
+#else
+    using MSMQ.Messaging;
+#endif
     using NLog.Targets;
     using Xunit;
 
