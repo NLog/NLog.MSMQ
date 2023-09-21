@@ -193,12 +193,12 @@ namespace NLog.MessageQueue.Tests
                 return QueueExists;
             }
 
-            public override void Create(string queue)
+            public override void Create(string queue, bool singleTransaction)
             {
                 QueueCreated = true;
             }
 
-            public override void Send(string queue, Message message)
+            public override void Send(string queue, Message message, bool singleTransaction)
             {
                 SentMessages.Add(message);
             }

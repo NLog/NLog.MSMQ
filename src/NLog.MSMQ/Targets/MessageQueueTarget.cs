@@ -101,19 +101,19 @@ namespace NLog.Targets
         public Layout Queue { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether sending to a transactional queue using single-transaction-style.
+        /// </summary>
+        /// <docgen category='Queue Options' order='10' />
+        public bool SingleTransaction { get; set; }
+
+        /// <summary>
         /// Gets or sets the label to associate with each message.
         /// </summary>
         /// <remarks>
         /// By default no label is associated.
         /// </remarks>
         /// <docgen category='Queue Options' order='10' />
-        public Layout Label { get; set; } = "NLog";
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to create the queue if it doesn't exists.
-        /// </summary>
-        /// <docgen category='Queue Options' order='10' />
-        public bool CreateQueueIfNotExists { get; set; }
+        public Layout Label { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether to use recoverable messages (with guaranteed delivery).
@@ -129,7 +129,6 @@ namespace NLog.Targets
 
         /// <summary>
         /// Gets or sets a value indicating whether to use the XML format when serializing message.
-        /// This will also disable creating queues.
         /// </summary>
         /// <docgen category='Layout Options' order='10' />
         public bool UseXmlEncoding { get; set; }
@@ -138,8 +137,14 @@ namespace NLog.Targets
         /// Gets or sets a value indicating whether to check if a queue exists before writing to it.
         /// </summary>
         /// <docgen category='Layout Options' order='11' />
-        public bool CheckIfQueueExists { get; set; } = true;
-        
+        public bool CheckIfQueueExists { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to create the queue if it doesn't exists.
+        /// </summary>
+        /// <docgen category='Queue Options' order='10' />
+        public bool CreateQueueIfNotExists { get; set; }
+
         internal MessageQueueProxy MessageQueueProxy { get; set; }
 
         /// <summary>
@@ -149,27 +154,32 @@ namespace NLog.Targets
         /// <param name="logEvent">The logging event.</param>
         protected override void Write(LogEventInfo logEvent)
         {
-            if (Queue is null)
+            var queue = RenderLogEvent(Queue, logEvent);
+            if (string.IsNullOrEmpty(queue))
             {
+                Common.InternalLogger.Debug("MessageQueueTarget: Failed sending message, because queue name is empty.");
                 return;
             }
 
-            var queue = Queue.Render(logEvent);
-
-            if (CheckIfQueueExists && !IsFormatNameSyntax(queue) && !MessageQueueProxy.Exists(queue))
+            if (CheckIfQueueExists || CreateQueueIfNotExists)
             {
-                if (CreateQueueIfNotExists)
+                if (!IsFormatNameSyntax(queue) && !MessageQueueProxy.Exists(queue))
                 {
-                    MessageQueueProxy.Create(queue);
-                }
-                else
-                {
-                    return;
+                    if (CreateQueueIfNotExists)
+                    {
+                        Common.InternalLogger.Debug("MessageQueueTarget: Creating queue: {0}", queue);
+                        MessageQueueProxy.Create(queue, SingleTransaction);
+                    }
+                    else
+                    {
+                        Common.InternalLogger.Debug("MessageQueueTarget: Skip sending message, because non-existing queue: {0}", queue);
+                        return;
+                    }
                 }
             }
 
             var msg = PrepareMessage(logEvent);
-            MessageQueueProxy.Send(queue, msg);
+            MessageQueueProxy.Send(queue, msg, SingleTransaction);
         }
 
         /// <summary>
@@ -185,22 +195,23 @@ namespace NLog.Targets
         protected virtual Message PrepareMessage(LogEventInfo logEvent)
         {
             var msg = new Message();
-            if (Label != null)
+            var label = RenderLogEvent(Label, logEvent);
+            if (!string.IsNullOrEmpty(label))
             {
-                msg.Label = Label.Render(logEvent);
+                msg.Label = label;
             }
 
             msg.Recoverable = Recoverable;
             msg.Priority = DefaultMessagePriority;
 
+            var body = RenderLogEvent(Layout, logEvent);
             if (UseXmlEncoding)
             {
-                msg.Body = Layout.Render(logEvent);
+                msg.Body = body;
             }
             else
             {
-                var dataBytes = Encoding.GetBytes(Layout.Render(logEvent));
-
+                var dataBytes = Encoding.GetBytes(body);
                 msg.BodyStream.Write(dataBytes, 0, dataBytes.Length);
             }
 
@@ -220,21 +231,19 @@ namespace NLog.Targets
             return MessageQueue.Exists(queue);
         }
 
-        public virtual void Create(string queue)
+        public virtual void Create(string queue, bool singleTransaction)
         {
-            MessageQueue.Create(queue);
+            MessageQueue.Create(queue, singleTransaction);
         }
 
-        public virtual void Send(string queue, Message message)
+        public virtual void Send(string queue, Message message, bool singleTransaction)
         {
-            if (message is null)
+            using (var mq = new MessageQueue(queue, QueueAccessMode.Send))
             {
-                return;
-            }
-
-            using (var mq = new MessageQueue(queue))
-            {
-                mq.Send(message);
+                if (singleTransaction)
+                    mq.Send(message, MessageQueueTransactionType.Single);
+                else
+                    mq.Send(message);
             }
         }
     }
