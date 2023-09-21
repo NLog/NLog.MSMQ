@@ -4,7 +4,7 @@
     <TargetFrameworks Condition=" '$(TargetFrameworks)' == '' ">net46;net45;net35;netstandard2.0</TargetFrameworks>
     <RootNamespace>NLog</RootNamespace>
 
-    <VersionPrefix>5.2.0</VersionPrefix>
+    <VersionPrefix>5.3.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <AssemblyVersion>5.0.0.0</AssemblyVersion>
