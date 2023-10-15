@@ -29,9 +29,9 @@ NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to
     LogManager.Setup().SetupExtensions(ext => ext.RegisterTarget<NLog.Targets.MessageQueueTarget>());
     ```
 
-### How to use MessageQueueTarget
+### Example NLog.config file
 
-Use the target "MSMQ" in your nlog.config
+Example of using the target "MSMQ" in `nlog.config`-file:
 
 ```xml
 <nlog>
