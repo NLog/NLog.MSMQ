@@ -26,7 +26,9 @@ NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to
    Alternative register from code using [fluent configuration API](https://github.com/NLog/NLog/wiki/Fluent-Configuration-API):
 
     ```csharp
-    LogManager.Setup().SetupExtensions(ext => ext.RegisterTarget<NLog.Targets.MessageQueueTarget>());
+    LogManager.Setup().SetupExtensions(ext => {
+       ext.RegisterTarget<NLog.Targets.MessageQueueTarget>();
+    });
     ```
 
 ### Example NLog.config file
