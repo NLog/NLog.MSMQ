@@ -23,6 +23,12 @@ NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to
     </extensions>
     ```
 
+   Alternative register from code using [fluent configuration API](https://github.com/NLog/NLog/wiki/Fluent-Configuration-API):
+
+    ```csharp
+    LogManager.Setup().SetupExtensions(ext => ext.RegisterTarget<NLog.Targets.MessageQueueTarget>());
+    ```
+
 ### How to use MessageQueueTarget
 
 Use the target "MSMQ" in your nlog.config

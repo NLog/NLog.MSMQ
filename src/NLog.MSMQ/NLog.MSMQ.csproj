@@ -25,6 +25,7 @@
     Docs:
     https://github.com/NLog/NLog/wiki/MSMQ-target
 </PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>NLog;MSMQ;logging;log</PackageTags>
     <PackageIcon>N.png</PackageIcon>
     <PackageProjectUrl>https://github.com/NLog/NLog.MSMQ</PackageProjectUrl>
@@ -81,6 +82,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
     <None Include="N.png" Pack="true" PackagePath="" Visible="false" />
   </ItemGroup>
  
