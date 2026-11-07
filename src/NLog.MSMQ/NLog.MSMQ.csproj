@@ -9,9 +9,7 @@
 
     <AssemblyVersion>5.0.0.0</AssemblyVersion>
     <!-- AssemblyVersion must be fixed on 5.0.0.0 -->
-    <AppVeyorBuildNumber>$(APPVEYOR_BUILD_NUMBER)</AppVeyorBuildNumber>
-    <AppVeyorBuildNumber Condition="'$(AppVeyorBuildNumber)' == ''">0</AppVeyorBuildNumber>
-    <FileVersion>$(VersionPrefix).$(AppVeyorBuildNumber)</FileVersion>
+    <FileVersion>$(VersionPrefix).0</FileVersion>
 
     <Title>NLog MSMQ target</Title>
     <Company>NLog</Company>
@@ -64,7 +62,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="NLog" Version="5.2.2" />
   </ItemGroup>
 

@@ -2,7 +2,7 @@
 NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to Microsoft Message Queue (MSMQ)
 
 [![Version](https://badge.fury.io/nu/NLog.MSMQ.svg)](https://www.nuget.org/packages/NLog.MSMQ)
-[![AppVeyor](https://img.shields.io/appveyor/ci/nlog/NLog-MSMQ/master.svg)](https://ci.appveyor.com/project/nlog/NLog-MSMQ/branch/master)
+[![CI](https://github.com/NLog/NLog.MSMQ/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NLog/NLog.MSMQ/actions/workflows/ci.yml)
 
 
 ### How to install
