@@ -3,7 +3,7 @@ NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to
 
 [![Version](https://badge.fury.io/nu/NLog.MSMQ.svg)](https://www.nuget.org/packages/NLog.MSMQ)
 [![CI](https://github.com/NLog/NLog.MSMQ/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NLog/NLog.MSMQ/actions/workflows/ci.yml)
-
+[![codecov](https://codecov.io/gh/NLog/NLog.MSMQ/graph/badge.svg?token=EELB269VET)](https://codecov.io/gh/NLog/NLog.MSMQ)
 
 ### How to install
 
