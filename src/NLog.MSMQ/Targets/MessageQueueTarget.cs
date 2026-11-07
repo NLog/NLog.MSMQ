@@ -97,7 +97,6 @@ namespace NLog.Targets
         /// For other available queue names, consult MSMQ documentation.
         /// </remarks>
         /// <docgen category='Queue Options' order='10' />
-        [RequiredParameter]
         public Layout Queue { get; set; }
 
         /// <summary>
@@ -146,6 +145,17 @@ namespace NLog.Targets
         public bool CreateQueueIfNotExists { get; set; }
 
         internal MessageQueueProxy MessageQueueProxy { get; set; }
+
+        /// <summary>
+        /// Validates the target configuration.
+        /// </summary>
+        protected override void InitializeTarget()
+        {
+            if (Queue == null)
+                throw new NLogConfigurationException("Parameter 'Queue' must be set.");
+
+            base.InitializeTarget();
+        }
 
         /// <summary>
         /// Writes the specified logging event to a queue specified in the Queue 

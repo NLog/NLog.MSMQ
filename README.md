@@ -12,7 +12,7 @@ NLog [MSMQ Target](https://github.com/NLog/NLog/wiki/MSMQ-target) for writing to
     `Install-Package NLog.MSMQ` or in your csproj:
 
     ```xml
-    <PackageReference Include="NLog.MSMQ" Version="5.*" />
+    <PackageReference Include="NLog.MSMQ" Version="6.*" />
     ```
 
 2) Add to your nlog.config:

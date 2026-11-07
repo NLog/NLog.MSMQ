@@ -39,6 +39,7 @@ namespace NLog.MessageQueue.Tests
 #else
     using MSMQ.Messaging;
 #endif
+    using NLog.Config;
     using NLog.Targets;
     using Xunit;
 
@@ -64,12 +65,25 @@ namespace NLog.MessageQueue.Tests
         }
 
         [Fact]
+        public void QueueNotSet_InitializeTarget_ThrowsConfigurationException()
+        {
+            var target = new MessageQueueTarget();
+            var exception = Assert.Throws<NLogConfigurationException>(() =>
+                new LogFactory().Setup().LoadConfiguration(cfg =>
+                {
+                    cfg.Configuration.AddRuleForAllLevels(target);
+                }));
+
+            Assert.Equal("Parameter 'Queue' must be set.", exception.Message);
+        }
+
+        [Fact]
         public void QueueDoesNotExistsAndDoNotCreate_Write_NothingIsWritten()
         {
             var messageQueueTestProxy = new MessageQueueTestProxy
-                                        {
-                                            QueueExists = false,
-                                        };
+            {
+                QueueExists = false,
+            };
             var logFactory = SetupMsmqTarget(messageQueueTestProxy, false);
 
             logFactory.GetCurrentClassLogger().Fatal("Test Message");
